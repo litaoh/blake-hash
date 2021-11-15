@@ -1,6 +1,6 @@
 name: blake_hash
 description: Provide Blake encryption support, dart implementation library
-version: 1.0.0
+version: 2.0.0
 homepage: https://github.com/litaoh/blake-hash
 repository: https://github.com/litaoh/blake-hash
 issue_tracker: https://github.com/litaoh/blake-hash/issues
