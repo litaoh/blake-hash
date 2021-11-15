@@ -1,9 +1,8 @@
 import 'dart:typed_data';
-import 'package:test/test.dart';
-
-import 'package:hex/hex.dart';
 
 import 'package:blake_hash/blake_hash.dart';
+import 'package:convert/convert.dart';
+import 'package:test/test.dart';
 
 void main() {
   group('blake test', () {
@@ -25,8 +24,8 @@ void main() {
       test('blake256 vector#${vectors.indexOf(vector)}', () {
         expect(
             vector['blake256'],
-            HEX.encode(Blake256()
-                .update(Uint8List.fromList(HEX.decode(vector['input'])))
+            hex.encode(Blake256()
+                .update(Uint8List.fromList(hex.decode(vector['input']!)))
                 .digest()));
       });
     });

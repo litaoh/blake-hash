@@ -1,6 +1,6 @@
 part of blake_hash;
 
-class Blake {
+abstract class Blake {
   static List<Uint8List> sigma = [
     Uint8List.fromList([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]),
     Uint8List.fromList([14, 10, 4, 8, 9, 15, 13, 6, 1, 12, 0, 2, 11, 7, 5, 3]),
@@ -39,144 +39,14 @@ class Blake {
     0xb5470917
   ];
 
-  static Uint8List padding = Uint8List.fromList([
-    0x80,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0
-  ]);
+  static Uint8List padding = Uint8List.fromList([0x80, ...List.filled(127, 0)]);
 
-  ByteData _block;
-  int _blockOffset;
-  List<int> _h;
-  List<int> _zo;
-  List<int> _oo;
-  List<int> _length;
+  late ByteData _block;
+  late int _blockOffset;
+  late List<int> _h;
+  late Uint8List _zo;
+  late Uint8List _oo;
+  late List<int> _length;
 
   void _length_carry(List<int> data) {
     for (var j = 0; j < data.length; ++j) {
@@ -188,13 +58,11 @@ class Blake {
     }
   }
 
-  void reset() {}
+  void reset();
 
-  void _compress() {}
+  void _compress();
 
-  Uint8List digest() {
-    return null;
-  }
+  Uint8List digest();
 
   Blake update(Uint8List data) {
     var offset = 0;
