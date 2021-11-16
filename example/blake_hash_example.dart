@@ -3,7 +3,30 @@ import 'dart:typed_data';
 import 'package:blake_hash/blake_hash.dart';
 
 void main() {
-  var source = Uint8List.fromList([14,251,24,220,202,235,97,232,85,229,109,188,53,146,43,36,246,238,110,55,202,163]);
+  var source = Uint8List.fromList([
+    14,
+    251,
+    24,
+    220,
+    202,
+    235,
+    97,
+    232,
+    85,
+    229,
+    109,
+    188,
+    53,
+    146,
+    43,
+    36,
+    246,
+    238,
+    110,
+    55,
+    202,
+    163
+  ]);
   var hash = Blake256().update(source).digest();
   print(hash);
 
