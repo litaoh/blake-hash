@@ -1,3 +1,7 @@
+## 1.0.2
+
+- Support blake512
+
 ## 1.0.1
 
 - Support null-safety

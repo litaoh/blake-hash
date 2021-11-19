@@ -1,8 +1,5 @@
 part of blake_hash;
 
-Uint8List zo = Uint8List.fromList([0x01]);
-Uint8List oo = Uint8List.fromList([0x81]);
-
 class Blake256 extends Blake {
   late List<int> _s;
   late bool _nullT;
@@ -12,45 +9,45 @@ class Blake256 extends Blake {
   }
 
   @override
-  void reset() {
+  Blake256 reset() {
     _h = [
-      0x6a09e667,
-      0xbb67ae85,
-      0x3c6ef372,
-      0xa54ff53a,
-      0x510e527f,
-      0x9b05688c,
-      0x1f83d9ab,
-      0x5be0cd19
+      0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a, //
+      0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19
     ];
 
-    _s = [0, 0, 0, 0];
+    _s = List<int>.filled(4, 0);
 
     _block = ByteData(64);
 
     _blockOffset = 0;
-    _length = [0, 0];
+    _length = List<int>.filled(2, 0);
 
     _nullT = false;
-    _zo = zo;
-    _oo = oo;
+
+    return this;
   }
 
-  int _rotr32(int x, int n) => (x >> n) | ((x << (32 - n)) & 0xffffffff);
-
-  int _add32(int x, int y) => (x + y) & 0xffffffff;
+  int _rot(int x, int n) {
+    return ((x << (32 - n)) | (x >> n).toUnsigned(32)).toUnsigned(32);
+  }
 
   void _g(List<int> v, List<int> m, int i, int a, int b, int c, int d, int e) {
     List<Uint8List> sigma = Blake.sigma;
     List<int> u256 = Blake.u256;
-    v[a] = _add32(v[a], _add32(m[sigma[i][e]] ^ u256[sigma[i][e + 1]], v[b]));
-    v[d] = _rotr32(v[d] ^ v[a], 16);
-    v[c] = _add32(v[c], v[d]);
-    v[b] = _rotr32(v[b] ^ v[c], 12);
-    v[a] = _add32(v[a], _add32(m[sigma[i][e + 1]] ^ u256[sigma[i][e]], v[b]));
-    v[d] = _rotr32(v[d] ^ v[a], 8);
-    v[c] = _add32(v[c], v[d]);
-    v[b] = _rotr32(v[b] ^ v[c], 7);
+    v[a] = (v[a] +
+            ((m[sigma[i][e]] ^ u256[sigma[i][e + 1]]).toUnsigned(32)) +
+            v[b])
+        .toUnsigned(32);
+    v[d] = _rot(v[d] ^ v[a], 16);
+    v[c] = (v[c] + v[d]).toUnsigned(32);
+    v[b] = _rot(v[b] ^ v[c], 12);
+    v[a] = (v[a] +
+            ((m[sigma[i][e + 1]] ^ u256[sigma[i][e]]).toUnsigned(32)) +
+            v[b])
+        .toUnsigned(32);
+    v[d] = _rot(v[d] ^ v[a], 8);
+    v[c] = (v[c] + v[d]).toUnsigned(32);
+    v[b] = _rot(v[b] ^ v[c], 7);
   }
 
   @override
@@ -120,10 +117,10 @@ class Blake256 extends Blake {
     } else {
       if (_blockOffset < 55) {
         if (_blockOffset == 0) _nullT = true;
-        _length[0] -= (55 - _blockOffset) * 8;
+        _length[0] -= (55 - _blockOffset) << 3;
         update(Blake.padding.sublist(0, 55 - _blockOffset));
       } else {
-        _length[0] -= (64 - _blockOffset) * 8;
+        _length[0] -= (64 - _blockOffset) << 3;
         update(Blake.padding.sublist(0, 64 - _blockOffset));
         _length[0] -= 55 * 8;
         update(Blake.padding.sublist(1, 1 + 55));
@@ -144,7 +141,7 @@ class Blake256 extends Blake {
     ByteData buffer = ByteData(32);
 
     for (int i = 0; i < 8; ++i) {
-      buffer.setUint32(i * 4, _h[i]);
+      buffer.setUint32(i << 2, _h[i]);
     }
     return buffer.buffer.asUint8List();
   }
